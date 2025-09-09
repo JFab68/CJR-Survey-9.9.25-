@@ -5,8 +5,9 @@ let sessionToken = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     // Debug: Clear any existing rate limiting for testing (remove in production)
-    // localStorage.removeItem('auth_attempts');
-    // localStorage.removeItem('auth_attempt_time');
+    localStorage.removeItem('auth_attempts');
+    localStorage.removeItem('auth_attempt_time');
+    console.log('Cleared authentication rate limiting on page load');
     
     // Check existing authentication
     checkAuthenticationStatus();
@@ -18,7 +19,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const passwordError = document.getElementById('password-error');
         
         try {
+            console.log('Attempting authentication with password:', passwordInput.value);
             const response = await authenticateUser(passwordInput.value);
+            console.log('Authentication response:', response);
             if (response.success) {
                 sessionToken = response.token;
                 isAuthenticated = true;
@@ -40,18 +43,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show/hide password functionality
     const showPasswordCheckbox = document.getElementById('show-password');
-    const passwordInput = document.getElementById('password-input');
+    const passwordInputField = document.getElementById('password-input');
     
-    if (showPasswordCheckbox && passwordInput) {
+    if (showPasswordCheckbox && passwordInputField) {
         showPasswordCheckbox.addEventListener('change', function() {
+            console.log('Show password checkbox changed:', this.checked);
             if (this.checked) {
-                passwordInput.type = 'text';
+                passwordInputField.type = 'text';
+                console.log('Password field type set to text');
             } else {
-                passwordInput.type = 'password';
+                passwordInputField.type = 'password';
+                console.log('Password field type set to password');
             }
         });
+        console.log('Show password functionality initialized successfully');
     } else {
-        console.error('Show password elements not found');
+        console.error('Show password elements not found:', {
+            checkbox: showPasswordCheckbox,
+            input: passwordInputField
+        });
     }
 });
 
