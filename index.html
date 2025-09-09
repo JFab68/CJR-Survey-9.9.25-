@@ -13,6 +13,10 @@
             <p>This survey is by invitation only. Please enter the access code provided to you.</p>
             <form id="password-form">
                 <input type="password" id="password-input" placeholder="Access Code" required>
+                <div class="show-password-container">
+                    <input type="checkbox" id="show-password">
+                    <label for="show-password">Show Password</label>
+                </div>
                 <button type="submit">Enter</button>
             </form>
             <p id="password-error" class="error-message" style="display: none;">Invalid Access Code. Please try again.</p>

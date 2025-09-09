@@ -22,7 +22,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: var(--primary-color);
-    background-color: var(--light-gray);
+    background-color: #BBE2F2;
 }
 
 #password-protection {
@@ -31,7 +31,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(187, 226, 242, 0.8);
+    background-color: rgba(187, 226, 242, 0.9); /* #BBE2F2 with 90% opacity */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -48,17 +48,6 @@ body {
     max-width: 400px;
 }
 
-.login-logo {
-    max-width: 250px;
-    margin-bottom: 20px;
-}
-
-.header-logo {
-    max-width: 300px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
-
 .login-box h2 {
     margin-bottom: 15px;
     color: var(--primary-color);
@@ -69,14 +58,30 @@ body {
     color: var(--dark-gray);
 }
 
-#password-form input {
+#password-form input[type="password"],
+#password-form input[type="text"] {
     width: 100%;
     padding: 12px;
     border: 2px solid var(--medium-gray);
     border-radius: var(--border-radius);
     font-size: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
+
+.show-password-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 8px;
+}
+
+.show-password-container label {
+    font-weight: normal;
+    color: var(--dark-gray);
+    cursor: pointer;
+}
+
 
 #password-form button {
     width: 100%;
@@ -103,7 +108,7 @@ body {
 
 .container {
     max-width: 900px;
-    margin: 0 auto;
+    margin: 20px auto;
     padding: 20px;
 }
 
