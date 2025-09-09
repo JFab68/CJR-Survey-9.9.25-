@@ -67,6 +67,7 @@ async function initializeSurvey() {
     setupCheckboxStyles();
     updateSelectionInstructions();
     setupSelectionLimits();
+    initializeTestMode();
     setupAutoSave();
     await loadSurveyState();
 }
@@ -1120,4 +1121,23 @@ function setupAutoSave() {
     document.querySelectorAll('.navigation button').forEach(button => {
         button.addEventListener('click', () => saveSurveyState());
     });
+}
+
+function initializeTestMode() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('test') === 'true') {
+        const modeInput = document.getElementById('submission_mode');
+        if (modeInput) {
+            modeInput.value = 'test';
+        }
+
+        // Add a visual indicator to the header
+        const header = document.querySelector('.survey-header h1');
+        if (header) {
+            const testIndicator = document.createElement('span');
+            testIndicator.textContent = ' [TEST MODE]';
+            testIndicator.style.color = 'var(--danger-color)';
+            header.appendChild(testIndicator);
+        }
+    }
 }
