@@ -712,7 +712,7 @@ function handleSubmit(e) {
         }
         return response;
     })
-    .then(() => {
+    .then(async () => {
         document.getElementById('loadingIndicator').style.display = 'none';
         document.getElementById('successMessage').style.display = 'block';
         // Clear all sensitive data
@@ -1139,4 +1139,3 @@ function clearAuthLimiting() {
 
 // Make function available globally for testing
 window.clearAuthLimiting = clearAuthLimiting;
-
