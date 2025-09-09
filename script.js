@@ -1000,7 +1000,7 @@ class SecureStorage {
         return await this.decryptData(encryptedData);
     }
     
-    removeItem(key) {
+    async removeItem(key) {
         localStorage.removeItem(key);
     }
 }
