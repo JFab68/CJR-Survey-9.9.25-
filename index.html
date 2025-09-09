@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criminal Justice Reform Legislative Priorities Survey</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="survey-header">
+            <h1>Criminal Justice Reform Legislative Priorities Survey</h1>
+            <div class="survey-intro">
+                <strong>Hello:</strong><br>
+                Representative Powell is gathering input from advocates, stakeholders, directly impacted individuals, and community members to identify and organize key legislative priorities for the upcoming session. Your feedback is crucial for focusing our collective efforts on the most impactful reforms.
+            </div>
+        </header>
+
+        <div class="progress-container">
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Survey progress">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">
+                <span id="currentStep">1</span> of <span id="totalSteps">5</span>
+            </div>
+        </div>
+
+        <form id="surveyForm" netlify name="cj-reform-survey">
+            <!-- Section 1: Background -->
+            <div class="section active" id="section1">
+                <h2>Section 1: Background</h2>
+                <p class="section-description">This section helps us understand the different perspectives of those responding to the survey.</p>
+                
+                <div class="form-group">
+                    <label for="name">Name (Optional):</label>
+                    <input type="text" id="name" name="name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone (Optional):</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email (Optional):</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                
+                <div class="form-group">
+                    <label class="section-label">Please check which of the following best describes your role or connection to criminal justice reform? (Check all that apply)</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-with-specify">
+                            <input type="checkbox" name="role" value="justice_involved" data-specify="true">
+                            Justice Involved Individual
+                            <div class="specify-field" style="display: none;">
+                                <input type="text" name="justice_involved_detail" placeholder="Please specify (Optional)">
+                            </div>
+                        </label>
+                        
+                        <label class="checkbox-with-specify">
+                            <input type="checkbox" name="role" value="family_member" data-specify="true">
+                            Family member of someone currently or formerly incarcerated
+                            <div class="specify-field" style="display: none;">
+                                <input type="text" name="family_member_detail" placeholder="Please specify:">
+                            </div>
+                        </label>
+                        
+                        <label class="checkbox-with-specify">
+                            <input type="checkbox" name="role" value="non_profit" data-specify="true">
+                            Non-profit, social service provider, or advocacy organization staff
+                            <div class="specify-field" style="display: none;">
+                                <input type="text" name="non_profit_detail" placeholder="Please specify:">
+                            </div>
+                        </label>
+                        
+                        <label class="checkbox-with-specify">
+                            <input type="checkbox" name="role" value="lobbyist_policymaker" data-specify="true">
+                            Paid lobbyist or policy maker
+                            <div class="specify-field" style="display: none;">
+                                <input type="text" name="lobbyist_policymaker_detail" placeholder="Please specify:">
+                            </div>
+                        </label>
+                        
+                        <label class="checkbox-with-specify">
+                            <input type="checkbox" name="role" value="legal_professional" data-specify="true">
+                            Current or former legal professional (e.g., lawyer, judge)
+                            <div class="specify-field" style="display: none;">
+                                <input type="text" name="legal_professional_detail" placeholder="Please specify:">
+                            </div>
+                        </label>
+                        
+                        <label class="checkbox-with-specify">
+                            <input type="checkbox" name="role" value="law_enforcement" data-specify="true">
+                            Current or former law enforcement or corrections staff
+                            <div class="specify-field" style="display: none;">
+                                <input type="text" name="law_enforcement_detail" placeholder="Please specify:">
+                            </div>
+                        </label>
+                        
+                        <label class="checkbox">
+                            <input type="checkbox" name="role" value="general_public">
+                            General public / interested citizen
+                        </label>
+                        
+                        <label class="checkbox-with-specify">
+                            <input type="checkbox" name="role" value="other" data-specify="true">
+                            Other
+                            <div class="specify-field" style="display: none;">
+                                <input type="text" name="other_detail" placeholder="Please specify your role">
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Reform Areas Part 1 -->
+            <div class="section" id="section2">
+                <h2>Section 2: We want to hear from you.</h2>
+                <div class="key-issue-note">
+                    <h3>A Note on a Key Issue: The "Guilty Mind" vs. Accidental Conduct</h3>
+                    <p>As you review the reform ideas, please keep one important concept in mind:</p>
+                    <ul>
+                        <li><strong>The Problem:</strong> In Arizona, you can be convicted of a "strict liability" crime for an honest mistake. This is because if a law doesn't mention intent (mens rea, or a "guilty mind"), our legal system assumes none is required to be proven.</li>
+                        <li><strong>A Proposed Solution:</strong> One reform idea you'll see in the "Prosecution & Courts" section aims to fix this. It would change the default so that prosecutors must prove a person acted "knowingly." This ensures our laws target intentional conduct, not accidents, restoring a fundamental principle of fairness.</li>
+                    </ul>
+                </div>
+                
+                <p>The next section seeks your input on areas of the criminal justice system that could be improved. Please feel free to select as many ideas that you agree are most worthwhile to pursue.</p>
+                
+                <div class="reform-section">
+                    <h3>A. Criminal Code Review</h3>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="code_review_ambiguous">Identify and reform laws that are ambiguous or too difficult to follow and/or enforce</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="code_review_conflict">Identify and reform laws that don't make any sense or conflict with other laws</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="code_review_repeal">Identify and repeal criminal laws that are out of date or are inapplicable</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="code_review_dangerous_offenses">Reform and differentiate dangerous offenses based on conduct. i.e. possession of child sexual abuse materials v. creation of such materials.</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="code_review_felony_murder">Reform and differentiate felony murder offense based on conduct (i.e. shooter v. driver)</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="code_review_assaults">Separate physical assaults from reasonable apprehension interactions.</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="code_review_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="code_review_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                </div>
+
+                <div class="reform-section">
+                    <h3>B. Policing & Law Enforcement</h3>
+                    <h4>Officer Conduct & Training</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="police_use_of_force">Use of Force Standards</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="police_training_mandates">Training Mandates</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="police_delay_enforcement">Delay of Enforcement</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="police_conduct_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="police_conduct_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                    
+                    <h4>Accountability & Oversight</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="police_accountability_systems">Accountability Systems</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="police_oversight_structures">Oversight Structures</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="police_accountability_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="police_accountability_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                    
+                    <h4>Data & Technology</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="police_data_collection">Data Collection Requirements</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="police_technology_regulation">Technology Regulation</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="police_clearance_rates">Clearance Rates (Proportion of crimes known to police that are solved versus all crime known to police.)</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="police_data_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="police_data_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                    
+                    <h4>Constitutional Rights</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="police_first_amendment">Protect First Amendment rights.</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="police_interrogation_practices">Prohibit manipulative interrogation practices and require evidence-based forensic interview protocols, especially for vulnerable individuals (e.g., juveniles, persons with autism or low IQ).</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="police_arrest_notification">Require law enforcement to inform individuals of the reason for their arrest at the time of the arrest.</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="police_juvenile_protection">Protect juveniles by requiring a parent or guardian to be present for any law enforcement interviews.</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="police_rights_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="police_rights_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Reform Areas Part 2 -->
+            <div class="section" id="section3">
+                <h2>Section 3: Reform Areas (Continued)</h2>
+                
+                <div class="reform-section">
+                    <h3>C. Pre-Trial & Local Detention</h3>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="pretrial_bail_reform">Bail Reform</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="pretrial_right_to_counsel">Right to Counsel</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="pretrial_speedy_trial">Speedy Trial</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="pretrial_services">Pretrial Services</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="pretrial_jail_standards">Jail Standards</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="pretrial_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="pretrial_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                </div>
+
+                <div class="reform-section">
+                    <h3>D. Prosecution & Courts</h3>
+                    <h4>Prosecutorial Power & Accountability</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prosecution_power_limitations">Limitations on Prosecutorial Power</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prosecution_charging_practices">Charging Practices Reform</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prosecution_conviction_integrity">Conviction Integrity</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prosecution_immunity_standards">Set clear standards for when immunity goes into effect for prosecutors</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="prosecution_power_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="prosecution_power_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                    
+                    <h4>Sentencing & Enhancement</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prosecution_sentencing_practices">Sentencing Practices Reform</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prosecution_hannah_priors">Hannah Priors (Prior Enhancement Reform)</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prosecution_felony_murder_rule">Felony Murder Rule Reform</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prosecution_judicial_discretion">Restore judicial discretion, allowing judges to depart from mandatory sentencing guidelines when appropriate.</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prosecution_mens_rea">Clarify in the criminal code that any offense without a specified mens rea is presumed to require a "knowingly" mental state, rather than being a strict liability offense.</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="prosecution_sentencing_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="prosecution_sentencing_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+
+                    <h4>Case Resolution Alternatives</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="alts_diversion">Diversion</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="alts_deflection">Deflection</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="alts_dismissal">Dismissal</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="alts_exoneration">Exoneration</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="alts_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="alts_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+
+                    <h4>Special Populations & Rights</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="special_pop_informants">Reform the use of confidential informants.</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="special_pop_emerging_adults">Create sentencing alternatives for emerging adults</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="special_pop_other_alts" data-specify="true">Create sentencing alternatives for other populations:<div class="specify-field" style="display: none;"><input type="text" name="special_pop_other_alts_detail" placeholder="Please specify:"></div></label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="special_pop_neurodivergent">Consider limited culpability and reduced sentencing for neurodivergent defendants.</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="special_pop_firearm_rights">Restore firearm rights for non-violent felony offenders after sentence completion, limiting prohibitions to only those convicted of violent/dangerous offenses or who used a weapon in the commission of their offense.</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="special_pop_juvenile_jurisdiction">Allow juvenile courts to retain jurisdiction over offenses committed by a juvenile, regardless of when the prosecution occurs.</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="special_pop_min_age">Create a minimum age for criminal prosecution.</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="special_pop_under_25_life_sentence">Prohibit effective life sentences for individuals under 25 at the time of their offense by setting a maximum cumulative sentence.</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="special_pop_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="special_pop_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Reform Areas Part 3 -->
+            <div class="section" id="section4">
+                <h2>Section 4: Reform Areas (Continued)</h2>
+                
+                <div class="reform-section">
+                    <h3>E. Probation & Community Supervision</h3>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="probation_standards">Supervision Standards</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="probation_tech_oversight">Technology Oversight</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="probation_violations_reform">Violation Procedures Reform</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="probation_treatment_access">Treatment Access</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="probation_dept_reform">Probation Department management and reform</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="probation_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="probation_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                </div>
+
+                <div class="reform-section">
+                    <h3>F. Prisons & State Corrections</h3>
+                    <h4>Oversight & Accountability</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_independent_oversight">Independent Oversight</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_staff_accountability">Staff Accountability</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_public_records">Public Records Request Processing Reform</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_data_mandates">Data Collection and Reporting Mandates</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="prison_oversight_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="prison_oversight_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+
+                    <h4>Programming & Rehabilitation</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_prog_mandates">Programming Mandates</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_early_release">Expanded early release opportunities</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_rehab_programs">Require prisons to offer more rehabilitative programs.</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_revenue_programs">Establish revenue generating programs to offset cost of confinement. I.e. building modular homes for public purchase.</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="prison_prog_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="prison_prog_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+
+                    <h4>Conditions & Standards</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_conditions_standards">Conditions Standards</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_align_models">Align Arizona's prison practices with successful rehabilitative models (e.g., from Norway or Maine).</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="prison_conditions_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="prison_conditions_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+
+                    <h4>Sentence Review</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_second_look">"Second Look" Legislation</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_disproportionality">Disproportionality Review</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="prison_review_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="prison_review_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+
+                    <h4>Operations</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_end_private">End the use of privately run prisons to house Arizona inmates.</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_no_teens_in_adult">Prohibit the incarceration of teenagers in adult prisons.</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="prison_ops_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="prison_ops_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+
+                    <h4>Clemency</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="prison_clemency_governor">Empowering the Governor to issue pardons without a prior recommendation from the parole board.</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="prison_clemency_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="prison_clemency_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                </div>
+
+                 <div class="reform-section">
+                    <h3>G. Parole & Post-Release Supports</h3>
+                    <h4>Parole System Reform</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parole_board_reform">Parole Board Reform</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parole_supervision_reform">Supervision Reform</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="parole_system_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="parole_system_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+
+                    <h4>Release Mechanisms</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parole_clemency_board_reform">Board of Executive Clemency Reform</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parole_compassionate_release">Permit compassionate release for individuals who qualify for nursing home level care.</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="parole_release_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="parole_release_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+
+                    <h4>Reentry Support</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parole_barrier_removal">Barrier Removal (e.g., housing, employment)</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parole_reentry_funding">Reentry Services Funding and Access</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="parole_reentry_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="parole_reentry_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+
+                    <h4>Registration Laws</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parole_registration_reform">Reform lifetime registration laws to allow for removal based on low risk, demonstrated rehabilitation, or time-limited registration where appropriate.</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="parole_registration_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="parole_registration_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                </div>
+
+                <div class="reform-section">
+                    <h3>H. Parity</h3>
+                    <h4>Legal Status & Rights Restoration</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parity_rights_restoration">Rights Restoration</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parity_expungement_under25">Expungement for under 25</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="parity_legal_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="parity_legal_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                    
+                    <h4>Economic Integration</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parity_employment_barriers">Employment Barrier Removal</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parity_housing_access">Housing Access</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="parity_economic_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="parity_economic_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+
+                    <h4>System Monitoring</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parity_data_disparities">Data Collection on Disparities</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parity_impact_assessments">Racial and Community Impact Assessments</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parity_resource_equity">Resource Allocation Equity</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="parity_monitoring_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="parity_monitoring_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                    
+                    <h4>Justice & Review</h4>
+                    <p class="selection-instruction"></p>
+                    <div class="checkbox-group limit-selection">
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parity_wrongful_conviction_funding">Create a permanent source of funding for wrongful convictions.</label>
+                        <label class="checkbox"><input type="checkbox" name="reforms" value="parity_sentence_review">Permit individuals to apply for sentence review ("look back") in appropriate circumstances.</label>
+                        <label class="checkbox-with-specify"><input type="checkbox" name="reforms" value="parity_justice_other" data-specify="true">Other (please specify):<div class="specify-field" style="display: none;"><input type="text" name="parity_justice_other_detail" placeholder="Please specify"></div></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Priorities -->
+            <div class="section" id="section5">
+                <h2>Section 5: Priority Ranking</h2>
+
+                <div id="selectionsSummary">
+                    <h3>Your Selected Reform Ideas:</h3>
+                    <!-- Summary will be populated here by JavaScript -->
+                </div>
+                
+                <div class="form-group">
+                    <label class="section-label">Of the areas you selected above, please identify your TOP FIVE priorities for legislative action:</label>
+                    
+                    <div class="priority-group">
+                        <label for="priority1">1. First Priority:</label>
+                        <input type="text" id="priority1" name="priority1" placeholder="Enter your top priority">
+                    </div>
+                    
+                    <div class="priority-group">
+                        <label for="priority2">2. Second Priority:</label>
+                        <input type="text" id="priority2" name="priority2" placeholder="Enter your second priority">
+                    </div>
+                    
+                    <div class="priority-group">
+                        <label for="priority3">3. Third Priority:</label>
+                        <input type="text" id="priority3" name="priority3" placeholder="Enter your third priority">
+                    </div>
+                    
+                    <div class="priority-group">
+                        <label for="priority4">4. Fourth Priority:</label>
+                        <input type="text" id="priority4" name="priority4" placeholder="Enter your fourth priority">
+                    </div>
+                    
+                    <div class="priority-group">
+                        <label for="priority5">5. Fifth Priority:</label>
+                        <input type="text" id="priority5" name="priority5" placeholder="Enter your fifth priority">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="additional_input">Please share any additional thoughts on criminal justice reform priorities or legislative solutions you believe should be pursued:</label>
+                    <textarea id="additional_input" name="additional_input" rows="6" placeholder="Share your additional thoughts here..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="section-label">May we contact you for follow-up on your responses?</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox">
+                            <input type="radio" name="contact_permission" value="yes">
+                            Yes, you may contact me
+                        </label>
+                        <label class="checkbox">
+                            <input type="radio" name="contact_permission" value="no">
+                            No, please do not contact me
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button type="button" id="prevBtn" onclick="changeStep(-1)" style="display: none;">Previous</button>
+                <button type="button" id="nextBtn" onclick="changeStep(1)">Next</button>
+                <button type="submit" id="submitBtn" style="display: none;">Submit Survey</button>
+            </div>
+        </form>
+
+        <div id="loadingIndicator" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>Submitting your survey...</p>
+        </div>
+
+        <div id="successMessage" style="display: none;">
+            <div class="success-content">
+                <h2>Thank You!</h2>
+                <p>Your survey has been submitted successfully. Your input is valuable for shaping criminal justice reform priorities.</p>
+                <p>For questions, please contact:</p>
+                <ul>
+                    <li>Representative Powell: kpowell@azleg.gov</li>
+                    <li>Katie Krejci: Katiekesq@gmail.com</li>
+                    <li>John Fabricius: jfabricius@praxisinitiative.org</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
