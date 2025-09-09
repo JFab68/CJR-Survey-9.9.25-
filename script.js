@@ -4,6 +4,10 @@ let isAuthenticated = false;
 let sessionToken = null;
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Debug: Clear any existing rate limiting for testing (remove in production)
+    // localStorage.removeItem('auth_attempts');
+    // localStorage.removeItem('auth_attempt_time');
+    
     // Check existing authentication
     checkAuthenticationStatus();
     
@@ -34,16 +38,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Show/hide password
+    // Show/hide password functionality
     const showPasswordCheckbox = document.getElementById('show-password');
     const passwordInput = document.getElementById('password-input');
-    showPasswordCheckbox.addEventListener('change', function() {
-        if (this.checked) {
-            passwordInput.type = 'text';
-        } else {
-            passwordInput.type = 'password';
-        }
-    });
+    
+    if (showPasswordCheckbox && passwordInput) {
+        showPasswordCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                passwordInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
+            }
+        });
+    } else {
+        console.error('Show password elements not found');
+    }
 });
 
 async function initializeSurvey() {
@@ -1110,4 +1119,14 @@ function setupAutoSave() {
         button.addEventListener('click', () => saveSurveyState());
     });
 }
+
+// Debug function to clear rate limiting (for testing)
+function clearAuthLimiting() {
+    localStorage.removeItem('auth_attempts');
+    localStorage.removeItem('auth_attempt_time');
+    console.log('Authentication rate limiting cleared');
+}
+
+// Make function available globally for testing
+window.clearAuthLimiting = clearAuthLimiting;
 
