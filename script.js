@@ -4,11 +4,6 @@ let isAuthenticated = false;
 let sessionToken = null;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Debug: Clear any existing rate limiting for testing (remove in production)
-    localStorage.removeItem('auth_attempts');
-    localStorage.removeItem('auth_attempt_time');
-    console.log('Cleared authentication rate limiting on page load');
-    
     // Check existing authentication
     checkAuthenticationStatus();
     
@@ -19,9 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const passwordError = document.getElementById('password-error');
         
         try {
-            console.log('Attempting authentication with password:', passwordInput.value);
             const response = await authenticateUser(passwordInput.value);
-            console.log('Authentication response:', response);
             if (response.success) {
                 sessionToken = response.token;
                 isAuthenticated = true;
@@ -47,16 +40,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (showPasswordCheckbox && passwordInputField) {
         showPasswordCheckbox.addEventListener('change', function() {
-            console.log('Show password checkbox changed:', this.checked);
             if (this.checked) {
                 passwordInputField.type = 'text';
-                console.log('Password field type set to text');
             } else {
                 passwordInputField.type = 'password';
-                console.log('Password field type set to password');
             }
         });
-        console.log('Show password functionality initialized successfully');
     } else {
         console.error('Show password elements not found:', {
             checkbox: showPasswordCheckbox,
@@ -789,58 +778,33 @@ function handleSubmit(e) {
 
 // --- Authentication and Security Functions ---
 async function authenticateUser(password) {
-    // In production, this would call your secure server endpoint
-    // For now, implementing a basic secure client-side check with rate limiting
-    const rateLimitKey = 'auth_attempts';
-    const rateLimitTime = 'auth_attempt_time';
-    const maxAttempts = 5;
-    const lockoutTime = 15 * 60 * 1000; // 15 minutes
-    
-    const attempts = parseInt(localStorage.getItem(rateLimitKey) || '0');
-    const lastAttemptTime = parseInt(localStorage.getItem(rateLimitTime) || '0');
-    const now = Date.now();
-    
-    // Check if locked out
-    if (attempts >= maxAttempts && (now - lastAttemptTime) < lockoutTime) {
-        const remainingTime = Math.ceil((lockoutTime - (now - lastAttemptTime)) / 60000);
-        return {
-            success: false,
-            message: `Too many failed attempts. Please try again in ${remainingTime} minutes.`
-        };
-    }
-    
-    // Reset attempts if lockout period has passed
-    if ((now - lastAttemptTime) >= lockoutTime) {
-        localStorage.removeItem(rateLimitKey);
-        localStorage.removeItem(rateLimitTime);
-    }
-    
-    // Simulate server-side authentication
-    // TODO: Replace with actual server call
-    const validPassword = 'JusticeNow!';
-    
-    if (password === validPassword) {
-        // Clear failed attempts on success
-        localStorage.removeItem(rateLimitKey);
-        localStorage.removeItem(rateLimitTime);
-        
-        const token = generateSecureToken();
-        const expires = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
-        
+    try {
+        // This endpoint should be a serverless function (e.g., a Netlify Function)
+        // that securely validates the password against a stored secret.
+        const response = await fetch('/.netlify/functions/authenticate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ password: password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            // The server should provide a user-friendly error message.
+            return { success: false, message: data.message || 'Authentication failed.' };
+        }
+
+        // The server returns a token and expiry on success.
         return {
             success: true,
-            token: token,
-            expires: expires
+            token: data.token,
+            expires: data.expires,
         };
-    } else {
-        // Record failed attempt
-        localStorage.setItem(rateLimitKey, (attempts + 1).toString());
-        localStorage.setItem(rateLimitTime, now.toString());
-        
-        return {
-            success: false,
-            message: 'Invalid access code. Please try again.'
-        };
+    } catch (error) {
+        console.error('Network or server error during authentication:', error);
+        return { success: false, message: 'Could not connect to the authentication service. Please try again later.' };
     }
 }
 
@@ -1157,13 +1121,3 @@ function setupAutoSave() {
         button.addEventListener('click', () => saveSurveyState());
     });
 }
-
-// Debug function to clear rate limiting (for testing)
-function clearAuthLimiting() {
-    localStorage.removeItem('auth_attempts');
-    localStorage.removeItem('auth_attempt_time');
-    console.log('Authentication rate limiting cleared');
-}
-
-// Make function available globally for testing
-window.clearAuthLimiting = clearAuthLimiting;
