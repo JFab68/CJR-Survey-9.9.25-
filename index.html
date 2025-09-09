@@ -7,7 +7,19 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
+    <div id="password-protection">
+        <div class="login-box">
+            <h2>Enter Access Code</h2>
+            <p>This survey is by invitation only. Please enter the access code provided to you.</p>
+            <form id="password-form">
+                <input type="password" id="password-input" placeholder="Access Code" required>
+                <button type="submit">Enter</button>
+            </form>
+            <p id="password-error" class="error-message" style="display: none;">Invalid Access Code. Please try again.</p>
+        </div>
+    </div>
+
+    <div class="container" id="survey-container" style="display: none;">
         <header class="survey-header">
             <h1>Criminal Justice Reform Legislative Priorities Survey</h1>
             <div class="survey-intro">
@@ -17,7 +29,7 @@
         </header>
 
         <div class="progress-container">
-            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Survey progress">
+            <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
             <div class="progress-text">
@@ -25,25 +37,25 @@
             </div>
         </div>
 
-        <form id="surveyForm" netlify name="cj-reform-survey">
+        <form id="surveyForm" netlify name="cj-reform-survey" data-netlify="true">
             <!-- Section 1: Background -->
             <div class="section active" id="section1">
                 <h2>Section 1: Background</h2>
                 <p class="section-description">This section helps us understand the different perspectives of those responding to the survey.</p>
                 
                 <div class="form-group">
-                    <label for="name">Name (Optional):</label>
-                    <input type="text" id="name" name="name">
+                    <label for="name">Full Name (First and Last) (Optional):</label>
+                    <input type="text" id="name" name="name" placeholder="First Name & Last Name">
                 </div>
                 
                 <div class="form-group">
                     <label for="phone">Phone (Optional):</label>
-                    <input type="tel" id="phone" name="phone">
+                    <input type="tel" id="phone" name="phone" placeholder="(555) 555-5555">
                 </div>
                 
                 <div class="form-group">
                     <label for="email">Email (Optional):</label>
-                    <input type="email" id="email" name="email">
+                    <input type="email" id="email" name="email" placeholder="example@email.com">
                 </div>
                 
                 <div class="form-group">
@@ -476,3 +488,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+

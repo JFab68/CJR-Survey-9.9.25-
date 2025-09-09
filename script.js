@@ -1,7 +1,37 @@
 let currentStep = 1;
 const totalSteps = 5;
+const masterPassword = 'JusticeNow!'; // The master password
+const surveyStorageKey = 'cjReformSurveyProgress';
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Password protection logic
+    const passwordForm = document.getElementById('password-form');
+    if (passwordForm) {
+        passwordForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const passwordInput = document.getElementById('password-input');
+            const passwordError = document.getElementById('password-error');
+            if (passwordInput.value === masterPassword) {
+                document.getElementById('password-protection').style.display = 'none';
+                document.getElementById('survey-container').style.display = 'block';
+                sessionStorage.setItem('surveyAuthenticated', 'true');
+                initializeSurvey();
+            } else {
+                passwordError.style.display = 'block';
+            }
+        });
+    }
+
+    // Check if user is already authenticated (e.g., via session storage)
+    if (sessionStorage.getItem('surveyAuthenticated') === 'true') {
+        document.getElementById('password-protection').style.display = 'none';
+        document.getElementById('survey-container').style.display = 'block';
+        initializeSurvey();
+    }
+});
+
+function initializeSurvey() {
+    loadProgress();
     updateProgress();
     setupConditionalFields();
     setupFormNavigation();
@@ -9,53 +39,41 @@ document.addEventListener('DOMContentLoaded', function() {
     setupCheckboxStyles();
     updateSelectionInstructions();
     setupSelectionLimits();
-    setupSelectionListeners();
-});
+    setupAutoSave();
+}
 
 function calculateLimit(n) {
-    if (n <= 2) {
-        return 1;
-    } else if (n === 3) {
-        return 2;
-    } else if (n === 4) {
-        return 2;
-    } else { // n >= 5
-        return 3;
-    }
+    if (n <= 2) return 1;
+    if (n === 3 || n === 4) return 2;
+    return 3;
 }
 
 function updateSelectionInstructions() {
-    const checkboxGroups = document.querySelectorAll('.checkbox-group.limit-selection');
-    checkboxGroups.forEach(group => {
+    document.querySelectorAll('.checkbox-group.limit-selection').forEach(group => {
         const instructionP = group.parentElement.querySelector('.selection-instruction');
         if (!instructionP) return;
-
-        const checkboxes = group.querySelectorAll('input[type="checkbox"]');
-        const n = checkboxes.length;
+        const n = group.querySelectorAll('input[type="checkbox"]').length;
         const limit = calculateLimit(n);
-
         if (limit > 0 && n > 1) {
             instructionP.textContent = `Please select up to ${limit}.`;
             instructionP.style.display = 'block';
         } else {
-             instructionP.style.display = 'none';
+            instructionP.style.display = 'none';
         }
     });
 }
 
 function setupSelectionLimits() {
-    const checkboxGroups = document.querySelectorAll('.checkbox-group.limit-selection');
-    checkboxGroups.forEach(group => {
+    document.querySelectorAll('.checkbox-group.limit-selection').forEach(group => {
         const checkboxes = group.querySelectorAll('input[type="checkbox"]');
         const n = checkboxes.length;
         const limit = calculateLimit(n);
-
-        if (limit > 0) {
+        if (limit > 0 && n > 1) {
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', (event) => {
                     const checkedInGroup = group.querySelectorAll('input[type="checkbox"]:checked');
                     if (checkedInGroup.length > limit) {
-                        showError(group, `You may only select up to ${limit} option${limit > 1 ? 's' : ''} in this section.`);
+                        alert(`You may only select up to ${limit} option${limit > 1 ? 's' : ''} in this section.`);
                         event.target.checked = false;
                         const label = event.target.closest('label');
                         if (label) {
@@ -71,55 +89,47 @@ function setupSelectionLimits() {
 
 function updateSelectionsSummary() {
     const summaryContainer = document.getElementById('selectionsSummary');
-    summaryContainer.innerHTML = '<h3>Your Selected Reform Ideas:</h3>'; // Reset content
-    
+    summaryContainer.innerHTML = '<h3>Your Selected Reform Ideas:</h3>';
     const selectedCheckboxes = document.querySelectorAll('input[name="reforms"]:checked');
-    
     if (selectedCheckboxes.length === 0) {
         summaryContainer.innerHTML += '<p>You have not selected any reform ideas yet. Go back to make your selections.</p>';
         return;
     }
-
     const selectionsBySection = {};
-
     selectedCheckboxes.forEach(checkbox => {
         const reformSection = checkbox.closest('.reform-section');
         if (!reformSection) return;
-
+        let sectionTitle = 'Uncategorized';
+        const h4 = reformSection.querySelector('h4');
         const h3 = reformSection.querySelector('h3');
-        const sectionTitle = h3 ? h3.textContent : 'Uncategorized';
-        
+        if (h4) {
+           sectionTitle = h3.textContent + ' - ' + h4.textContent;
+        } else if (h3) {
+           sectionTitle = h3.textContent;
+        }
         if (!selectionsBySection[sectionTitle]) {
             selectionsBySection[sectionTitle] = [];
         }
-
         const label = checkbox.closest('label');
         const labelClone = label.cloneNode(true);
-        // Clean up the label text for display
         const specifyField = labelClone.querySelector('.specify-field');
         if (specifyField) specifyField.remove();
         const input = labelClone.querySelector('input');
         if(input) input.remove();
-        
         let selectionText = labelClone.textContent.trim();
-
-        // If it was a specify field, add the user's input
         if(checkbox.dataset.specify === 'true') {
             const originalSpecifyInput = label.querySelector('.specify-field input');
             if (originalSpecifyInput && originalSpecifyInput.value) {
                 selectionText += `: ${originalSpecifyInput.value}`;
             }
         }
-        
         selectionsBySection[sectionTitle].push(selectionText);
     });
-
     for (const sectionTitle in selectionsBySection) {
         const sectionDiv = document.createElement('div');
         const titleEl = document.createElement('h4');
         titleEl.textContent = sectionTitle;
         sectionDiv.appendChild(titleEl);
-
         const listEl = document.createElement('ul');
         selectionsBySection[sectionTitle].forEach(text => {
             const itemEl = document.createElement('li');
@@ -131,35 +141,21 @@ function updateSelectionsSummary() {
     }
 }
 
-function setupSelectionListeners() {
-    const reformCheckboxes = document.querySelectorAll('input[name="reforms"]');
-    reformCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', () => {
-            if (currentStep === 5) updateSelectionsSummary();
-        });
-    });
-}
-
 function setupConditionalFields() {
-    const checkboxesWithSpecify = document.querySelectorAll('input[type="checkbox"][data-specify="true"]');
-    
-    checkboxesWithSpecify.forEach(checkbox => {
+    document.querySelectorAll('input[type="checkbox"][data-specify="true"]').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const label = this.closest('label');
             const specifyField = label.querySelector('.specify-field');
-            
             if (specifyField) {
                 if (this.checked) {
                     specifyField.style.display = 'block';
                     specifyField.style.opacity = '0';
                     specifyField.style.transform = 'translateY(-10px)';
-                    
                     setTimeout(() => {
                         specifyField.style.transition = 'all 0.3s ease';
                         specifyField.style.opacity = '1';
                         specifyField.style.transform = 'translateY(0)';
                     }, 10);
-                    
                     const input = specifyField.querySelector('input[type="text"]');
                     if (input) {
                         setTimeout(() => input.focus(), 300);
@@ -168,7 +164,6 @@ function setupConditionalFields() {
                     specifyField.style.transition = 'all 0.3s ease';
                     specifyField.style.opacity = '0';
                     specifyField.style.transform = 'translateY(-10px)';
-                    
                     setTimeout(() => {
                         specifyField.style.display = 'none';
                         const input = specifyField.querySelector('input[type="text"]');
@@ -181,43 +176,45 @@ function setupConditionalFields() {
 }
 
 function setupFormNavigation() {
-    document.getElementById('surveyForm').addEventListener('submit', handleSubmit);
+    document.getElementById('surveyForm').addEventListener('submit', function(e) {
+        // We let Netlify handle the submission, but we clear progress on submit
+        localStorage.removeItem(surveyStorageKey);
+        sessionStorage.removeItem('surveyAuthenticated'); // Log out on submission
+    });
 }
 
 function setupCheckboxStyles() {
-    const checkboxLabels = document.querySelectorAll('.checkbox, .checkbox-with-specify');
-    checkboxLabels.forEach(label => {
-        const checkbox = label.querySelector('input[type="checkbox"]');
+    document.querySelectorAll('.checkbox, .checkbox-with-specify').forEach(label => {
+        const checkbox = label.querySelector('input[type="checkbox"], input[type="radio"]');
         if(checkbox) {
             checkbox.addEventListener('change', function() {
                 if (this.checked) {
                     label.style.borderColor = '#3498db';
                     label.style.backgroundColor = '#e8f4fd';
-                } else {
+                } else if (this.type === 'checkbox') {
                     label.style.borderColor = '#e9ecef';
                     label.style.backgroundColor = '#ffffff';
                 }
             });
+            // Initial style for radio buttons
+            if (checkbox.checked) {
+                 label.style.borderColor = '#3498db';
+                 label.style.backgroundColor = '#e8f4fd';
+            }
         }
     });
 }
 
 function showSection(step) {
-    const sections = document.querySelectorAll('.section');
-    sections.forEach(section => section.classList.remove('active'));
-    
+    document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
     const currentSection = document.getElementById(`section${step}`);
     if (currentSection) {
         currentSection.classList.add('active');
-        currentSection.querySelector('h2').focus(); // Focus on section heading for accessibility
     }
-    
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const submitBtn = document.getElementById('submitBtn');
-    
     prevBtn.style.display = step === 1 ? 'none' : 'inline-block';
-    
     if (step === totalSteps) {
         nextBtn.style.display = 'none';
         submitBtn.style.display = 'inline-block';
@@ -231,16 +228,15 @@ function changeStep(direction) {
     if (direction === 1 && !validateCurrentStep()) {
         return;
     }
-    
     const newStep = currentStep + direction;
-    
     if (newStep >= 1 && newStep <= totalSteps) {
         currentStep = newStep;
         if (newStep === 5) {
-            updateSelectionsSummary(); // <-- Update summary when moving to final page
+            updateSelectionsSummary();
         }
         showSection(currentStep);
         updateProgress();
+        saveProgress();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
@@ -249,12 +245,8 @@ function updateProgress() {
     const progressFill = document.getElementById('progressFill');
     const currentStepSpan = document.getElementById('currentStep');
     const totalStepsSpan = document.getElementById('totalSteps');
-    const progressBar = document.querySelector('.progress-bar');
-    
     const progressPercentage = (currentStep / totalSteps) * 100;
     progressFill.style.width = `${progressPercentage}%`;
-    progressBar.setAttribute('aria-valuenow', progressPercentage);
-    
     currentStepSpan.textContent = currentStep;
     totalStepsSpan.textContent = totalSteps;
 }
@@ -263,82 +255,70 @@ function validateCurrentStep() {
     if (currentStep === 1) {
         return validateSection1();
     }
-    if (currentStep === 5) {
-        return validateSection5();
-    }
     return true; 
 }
 
 function validateSection1() {
     const roleCheckboxes = document.querySelectorAll('input[name="role"]:checked');
-    
     if (roleCheckboxes.length === 0) {
-        const group = document.querySelector('.section.active .checkbox-group');
-        showError(group, 'Please select at least one role or connection to criminal justice reform.');
+        alert('Please select at least one role or connection to criminal justice reform.');
         return false;
     }
-    
     return true;
 }
 
-function validateSection5() {
-    const priorities = document.querySelectorAll('input[name^="priority"]');
-    for (let i = 0; i < priorities.length; i++) {
-        if (!priorities[i].value.trim()) {
-            const group = priorities[i].closest('.priority-group');
-            showError(group, `Please enter your ${i + 1}${getOrdinalSuffix(i + 1)} priority.`);
-            priorities[i].focus();
-            return false;
-        }
-    }
-    return true;
-}
+// --- SESSION & PROGRESS SAVING ---
 
-function getOrdinalSuffix(n) {
-    const s = ["th", "st", "nd", "rd"];
-    const v = n % 100;
-    return s[(v - 20) % 10] || s[v] || s[0];
-}
-
-function showError(element, message) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.textContent = message;
-    errorDiv.style.color = 'var(--danger-color)';
-    errorDiv.style.marginTop = '5px';
-    errorDiv.setAttribute('role', 'alert');
-    element.appendChild(errorDiv);
-    setTimeout(() => errorDiv.remove(), 3000);
-}
-
-async function handleSubmit(e) {
-    e.preventDefault();
-    
-    if (!validateCurrentStep()) {
-        return;
-    }
-    
-    const form = document.getElementById('surveyForm');
-    const formData = new FormData(form);
-
-    document.getElementById('surveyForm').style.display = 'none';
-    document.getElementById('loadingIndicator').style.display = 'block';
-
-    try {
-        const response = await fetch(form.action || '/', {
-            method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
-        });
-        if (response.ok) {
-            document.getElementById('loadingIndicator').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'block';
+function saveProgress() {
+    const formData = new FormData(document.getElementById('surveyForm'));
+    const data = {};
+    for (let [key, value] of formData.entries()) {
+        if (data[key]) {
+            if (!Array.isArray(data[key])) {
+                data[key] = [data[key]];
+            }
+            data[key].push(value);
         } else {
-            throw new Error('Form submission failed');
+            data[key] = value;
         }
-    } catch (error) {
-        showError(form, 'An error occurred while submitting the form. Please try again.');
-        document.getElementById('loadingIndicator').style.display = 'none';
-        document.getElementById('surveyForm').style.display = 'block';
+    }
+    data.currentStep = currentStep;
+    localStorage.setItem(surveyStorageKey, JSON.stringify(data));
+}
+
+function loadProgress() {
+    const savedData = localStorage.getItem(surveyStorageKey);
+    if (savedData) {
+        const data = JSON.parse(savedData);
+        currentStep = data.currentStep || 1;
+        const form = document.getElementById('surveyForm');
+        for (const key in data) {
+            if (key !== 'currentStep') {
+                const inputs = form.querySelectorAll(`[name="${key}"]`);
+                inputs.forEach(input => {
+                    const value = data[key];
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        if (Array.isArray(value)) {
+                            input.checked = value.includes(input.value);
+                        } else {
+                            input.checked = input.value === value;
+                        }
+                        // Trigger change to update styles and conditional fields
+                        if (input.checked) {
+                            input.dispatchEvent(new Event('change'));
+                        }
+                    } else {
+                        input.value = value;
+                    }
+                });
+            }
+        }
     }
 }
+
+function setupAutoSave() {
+    const form = document.getElementById('surveyForm');
+    form.addEventListener('change', saveProgress);
+    form.addEventListener('keyup', saveProgress);
+}
+
