@@ -63,6 +63,10 @@ document.addEventListener('DOMContentLoaded', function() {
             input: passwordInputField
         });
     }
+
+    // Add navigation event listeners
+    document.getElementById('prevBtn').addEventListener('click', () => changeStep(-1));
+    document.getElementById('nextBtn').addEventListener('click', () => changeStep(1));
 });
 
 async function initializeSurvey() {
@@ -122,19 +126,37 @@ function setupSelectionLimits() {
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', (event) => {
                     const checkedInGroup = group.querySelectorAll('input[type="checkbox"]:checked');
+                    
+                    // Clear any existing error when a change is made
+                    clearLimitError(group);
+
                     if (checkedInGroup.length > limit) {
-                        alert(`You may only select up to ${limit} option${limit > 1 ? 's' : ''} in this section.`);
+                        showLimitError(group, `You may only select up to ${limit} option${limit > 1 ? 's' : ''} in this section.`);
                         event.target.checked = false;
                         const label = event.target.closest('label');
                         if (label) {
-                            label.style.borderColor = '#e9ecef';
-                            label.style.backgroundColor = '#ffffff';
+                            label.classList.remove('is-selected');
                         }
                     }
                 });
             });
         }
     });
+}
+
+function showLimitError(group, message) {
+    clearLimitError(group); // Remove any existing error first
+    const errorElement = document.createElement('div');
+    errorElement.className = 'limit-error-message';
+    errorElement.textContent = message;
+    group.prepend(errorElement); // Add it to the top of the group
+}
+
+function clearLimitError(group) {
+    const existingError = group.querySelector('.limit-error-message');
+    if (existingError) {
+        existingError.remove();
+    }
 }
 
 function updateSelectionsSummary() {
@@ -149,6 +171,7 @@ function updateSelectionsSummary() {
     }
 
     const selectionsBySection = {};
+    const allSelectionsForPriorities = [];
 
     selectedCheckboxes.forEach(checkbox => {
         const reformSection = checkbox.closest('.reform-section');
@@ -179,7 +202,14 @@ function updateSelectionsSummary() {
             }
         }
         
+        // For summary list
         selectionsBySection[sectionTitle].push(selectionText);
+
+        // For priority dropdowns
+        allSelectionsForPriorities.push({
+            value: checkbox.value,
+            text: `${sectionTitle}: ${selectionText}`
+        });
     });
 
     for (const sectionTitle in selectionsBySection) {
@@ -197,6 +227,26 @@ function updateSelectionsSummary() {
         sectionDiv.appendChild(listEl);
         summaryContainer.appendChild(sectionDiv);
     }
+
+    // Populate priority dropdowns
+    const priorityDropdowns = document.querySelectorAll('.priority-group select');
+    const currentValues = Array.from(priorityDropdowns).map(sel => sel.value);
+
+    priorityDropdowns.forEach(dropdown => {
+        // Clear existing options but keep the first placeholder
+        dropdown.innerHTML = '<option value="">-- Select a priority --</option>';
+        
+        allSelectionsForPriorities.forEach(selection => {
+            const option = document.createElement('option');
+            option.value = selection.value;
+            option.textContent = selection.text;
+            dropdown.appendChild(option);
+        });
+    });
+
+    priorityDropdowns.forEach((dropdown, index) => {
+        dropdown.value = currentValues[index] || "";
+    });
 }
 
 
@@ -296,19 +346,17 @@ function validateNameField() {
 
 function validatePriorityFields() {
     const priorities = [];
-    const duplicates = new Set();
-    
     for (let i = 1; i <= 5; i++) {
         const priorityField = document.getElementById(`priority${i}`);
-        const value = priorityField.value.trim();
+        const value = priorityField.value;
         
         clearFieldError(priorityField);
         
         if (value) {
-            if (priorities.includes(value.toLowerCase())) {
-                showFieldError(priorityField, `Duplicate priority: "${value}" appears multiple times.`);
+            if (priorities.includes(value)) {
+                showFieldError(priorityField, `Each priority must be unique.`);
             } else {
-                priorities.push(value.toLowerCase());
+                priorities.push(value);
             }
         }
     }
@@ -316,22 +364,17 @@ function validatePriorityFields() {
 
 function showFieldError(field, message) {
     clearFieldError(field);
-    
-    field.style.borderColor = '#e74c3c';
-    
+    field.classList.add('is-invalid');
     const errorElement = document.createElement('div');
-    errorElement.className = 'field-validation-error';
-    errorElement.style.color = '#e74c3c';
-    errorElement.style.fontSize = '12px';
-    errorElement.style.marginTop = '3px';
+    errorElement.className = 'invalid-feedback';
     errorElement.textContent = message;
     
     field.parentNode.insertBefore(errorElement, field.nextSibling);
 }
 
 function clearFieldError(field) {
-    field.style.borderColor = '';
-    const existingError = field.parentNode.querySelector('.field-validation-error');
+    field.classList.remove('is-invalid');
+    const existingError = field.parentNode.querySelector('.invalid-feedback');
     if (existingError) {
         existingError.remove();
     }
@@ -344,13 +387,11 @@ function setupCheckboxStyles() {
         if(checkbox) {
             checkbox.addEventListener('change', function() {
                 if (this.type === 'checkbox') {
-                    if (this.checked) {
-                        label.style.borderColor = '#3498db';
-                        label.style.backgroundColor = '#e8f4fd';
-                    } else {
-                        label.style.borderColor = '#e9ecef';
-                        label.style.backgroundColor = '#ffffff';
-                    }
+                    label.classList.toggle('is-selected', this.checked);
+                } else if (this.type === 'radio') {
+                    // For radio buttons, remove class from all in the group then add to the selected one
+                    document.querySelectorAll(`input[name="${this.name}"]`).forEach(radio => radio.closest('label').classList.remove('is-selected'));
+                    label.classList.add('is-selected');
                 }
             });
         }
@@ -531,40 +572,35 @@ function validateSection5(errors) {
     let isValid = true;
     
     // Validate priority rankings
-    const priorities = [];
-    const duplicates = new Set();
-    
+    const selectedPriorities = [];
+    const priorityFields = [];
     for (let i = 1; i <= 5; i++) {
-        const priorityField = document.getElementById(`priority${i}`);
-        const value = priorityField.value.trim();
-        
+        priorityFields.push(document.getElementById(`priority${i}`));
+    }
+
+    priorityFields.forEach(field => {
+        const value = field.value;
         if (value) {
-            if (priorities.includes(value.toLowerCase())) {
-                duplicates.add(value);
+            if (selectedPriorities.includes(value)) {
                 errors.push({ 
-                    field: `priority${i}`, 
-                    message: `Duplicate priority: "${value}" appears multiple times.` 
+                    field: field.id, 
+                    message: `Each priority must be unique.` 
                 });
                 isValid = false;
             } else {
-                priorities.push(value.toLowerCase());
-            }
-            
-            if (value.length > 200) {
-                errors.push({ 
-                    field: `priority${i}`, 
-                    message: 'Priority description must be less than 200 characters.' 
-                });
-                isValid = false;
+                selectedPriorities.push(value);
             }
         }
-    }
+    });
     
     // Check if at least one priority is provided
-    if (priorities.length === 0) {
+    // Only require a priority if reforms were selected in previous steps
+    const anyReformsSelected = document.querySelector('input[name="reforms"]:checked');
+
+    if (anyReformsSelected && selectedPriorities.length === 0) {
         errors.push({ 
             field: 'priority1', 
-            message: 'Please provide at least one priority to continue.' 
+            message: 'Please rank at least one of your selected reforms.' 
         });
         isValid = false;
     }
@@ -612,30 +648,22 @@ function validateReformSelections(errors, sectionName) {
 
 function clearValidationErrors() {
     // Remove existing error displays
-    document.querySelectorAll('.validation-error').forEach(error => error.remove());
-    document.querySelectorAll('.error-field').forEach(field => {
-        field.classList.remove('error-field');
-        field.style.borderColor = '';
-    });
+    document.querySelectorAll('.invalid-feedback').forEach(error => error.remove());
+    document.querySelectorAll('.is-invalid').forEach(field => field.classList.remove('is-invalid'));
 }
 
 function displayValidationErrors(errors) {
     errors.forEach(error => {
         const field = document.getElementById(error.field) || 
                      document.querySelector(`[name="${error.field}"]`);
-        
         if (field) {
             // Add error styling to field
-            field.classList.add('error-field');
-            field.style.borderColor = '#e74c3c';
+            const fieldToStyle = (field.type === 'radio' || field.type === 'checkbox') ? field.closest('.form-group') : field;
+            fieldToStyle.classList.add('is-invalid');
             
             // Create error message element
             const errorElement = document.createElement('div');
-            errorElement.className = 'validation-error';
-            errorElement.style.color = '#e74c3c';
-            errorElement.style.fontSize = '14px';
-            errorElement.style.marginTop = '5px';
-            errorElement.style.fontWeight = 'bold';
+            errorElement.className = 'invalid-feedback';
             errorElement.textContent = error.message;
             
             // Insert error message after the field
@@ -652,7 +680,7 @@ function displayValidationErrors(errors) {
 }
 
 function scrollToFirstError() {
-    const firstError = document.querySelector('.validation-error');
+    const firstError = document.querySelector('.invalid-feedback');
     if (firstError) {
         firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }

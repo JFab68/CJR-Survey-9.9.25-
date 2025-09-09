@@ -419,27 +419,27 @@
                     
                     <div class="priority-group">
                         <label for="priority1">1. First Priority:</label>
-                        <input type="text" id="priority1" name="priority1" placeholder="Enter your top priority">
+                        <select id="priority1" name="priority1"><option value="">-- Select a priority --</option></select>
                     </div>
                     
                     <div class="priority-group">
                         <label for="priority2">2. Second Priority:</label>
-                        <input type="text" id="priority2" name="priority2" placeholder="Enter your second priority">
+                        <select id="priority2" name="priority2"><option value="">-- Select a priority --</option></select>
                     </div>
                     
                     <div class="priority-group">
                         <label for="priority3">3. Third Priority:</label>
-                        <input type="text" id="priority3" name="priority3" placeholder="Enter your third priority">
+                        <select id="priority3" name="priority3"><option value="">-- Select a priority --</option></select>
                     </div>
                     
                     <div class="priority-group">
                         <label for="priority4">4. Fourth Priority:</label>
-                        <input type="text" id="priority4" name="priority4" placeholder="Enter your fourth priority">
+                        <select id="priority4" name="priority4"><option value="">-- Select a priority --</option></select>
                     </div>
                     
                     <div class="priority-group">
                         <label for="priority5">5. Fifth Priority:</label>
-                        <input type="text" id="priority5" name="priority5" placeholder="Enter your fifth priority">
+                        <select id="priority5" name="priority5"><option value="">-- Select a priority --</option></select>
                     </div>
                 </div>
                 
@@ -464,8 +464,8 @@
             </div>
 
             <div class="navigation">
-                <button type="button" id="prevBtn" onclick="changeStep(-1)" style="display: none;">Previous</button>
-                <button type="button" id="nextBtn" onclick="changeStep(1)">Next</button>
+                <button type="button" id="prevBtn" style="display: none;">Previous</button>
+                <button type="button" id="nextBtn">Next</button>
                 <button type="submit" id="submitBtn" style="display: none;">Submit Survey</button>
             </div>
         </form>
@@ -492,4 +492,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
