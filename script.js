@@ -780,8 +780,6 @@ function handleSubmit(e) {
 // --- Authentication and Security Functions ---
 async function authenticateUser(password) {
     try {
-        // This endpoint should be a serverless function (e.g., a Netlify Function)
-        // that securely validates the password against a stored secret.
         const response = await fetch('/.netlify/functions/authenticate', {
             method: 'POST',
             headers: {
@@ -790,22 +788,37 @@ async function authenticateUser(password) {
             body: JSON.stringify({ password: password }),
         });
 
-        const data = await response.json();
+        // Read the response body as text first to handle all cases safely.
+        const responseBody = await response.text();
+        const contentType = response.headers.get("content-type");
 
-        if (!response.ok) {
-            // The server should provide a user-friendly error message.
-            return { success: false, message: data.message || 'Authentication failed.' };
+        if (contentType && contentType.includes("application/json")) {
+            // The server claims the response is JSON.
+            if (!responseBody) {
+                // The body is empty, which is invalid for JSON.
+                return { success: false, message: `Authentication service returned an empty response (Error: ${response.status}).` };
+            }
+
+            try {
+                const data = JSON.parse(responseBody);
+                if (!response.ok) {
+                    // The server sent a valid JSON error message.
+                    return { success: false, message: data.message || `Authentication failed with status: ${response.status}` };
+                }
+                // The server sent a valid JSON success message.
+                return { success: true, token: data.token, expires: data.expires };
+            } catch (jsonError) {
+                // The server claimed JSON but sent invalid JSON.
+                console.error('Failed to parse JSON from auth service:', jsonError);
+                return { success: false, message: 'Received an invalid response from the authentication service.' };
+            }
+        } else {
+            // The response was not JSON (e.g., a 404 HTML page).
+            return { success: false, message: `Authentication service is unavailable (Error: ${response.status}).` };
         }
-
-        // The server returns a token and expiry on success.
-        return {
-            success: true,
-            token: data.token,
-            expires: data.expires,
-        };
     } catch (error) {
         console.error('Network or server error during authentication:', error);
-        return { success: false, message: 'Could not connect to the authentication service. Please try again later.' };
+        return { success: false, message: 'Could not connect to the authentication service. Please check your network connection.' };
     }
 }
 
