@@ -309,7 +309,9 @@ function setupFormNavigation() {
 
 function validateEmailField() {
     const emailField = document.getElementById('email');
-    if (emailField.value.trim() && !ValidationRules.email.pattern.test(emailField.value)) {
+    if (!emailField.value.trim()) {
+        showFieldError(emailField, 'Email is required');
+    } else if (!ValidationRules.email.pattern.test(emailField.value)) {
         showFieldError(emailField, ValidationRules.email.message);
     } else {
         clearFieldError(emailField);
@@ -318,7 +320,9 @@ function validateEmailField() {
 
 function validatePhoneField() {
     const phoneField = document.getElementById('phone');
-    if (phoneField.value.trim() && !ValidationRules.phone.pattern.test(phoneField.value)) {
+    if (!phoneField.value.trim()) {
+        showFieldError(phoneField, 'Phone number is required');
+    } else if (!ValidationRules.phone.pattern.test(phoneField.value)) {
         showFieldError(phoneField, ValidationRules.phone.message);
     } else {
         clearFieldError(phoneField);
@@ -327,7 +331,9 @@ function validatePhoneField() {
 
 function validateNameField() {
     const nameField = document.getElementById('name');
-    if (nameField.value.length > ValidationRules.name.maxLength) {
+    if (!nameField.value.trim()) {
+        showFieldError(nameField, 'Full name is required');
+    } else if (nameField.value.length > ValidationRules.name.maxLength) {
         showFieldError(nameField, ValidationRules.name.message);
     } else {
         clearFieldError(nameField);
@@ -522,23 +528,32 @@ function validateSection1(errors) {
         }
     });
     
-    // Validate optional email if provided
+    // Validate required email field
     const emailField = document.getElementById('email');
-    if (emailField.value.trim() && !ValidationRules.email.pattern.test(emailField.value)) {
+    if (!emailField.value.trim()) {
+        errors.push({ field: 'email', message: 'Email is required' });
+        isValid = false;
+    } else if (!ValidationRules.email.pattern.test(emailField.value)) {
         errors.push({ field: 'email', message: ValidationRules.email.message });
         isValid = false;
     }
     
-    // Validate optional phone if provided
+    // Validate required phone field
     const phoneField = document.getElementById('phone');
-    if (phoneField.value.trim() && !ValidationRules.phone.pattern.test(phoneField.value)) {
+    if (!phoneField.value.trim()) {
+        errors.push({ field: 'phone', message: 'Phone number is required' });
+        isValid = false;
+    } else if (!ValidationRules.phone.pattern.test(phoneField.value)) {
         errors.push({ field: 'phone', message: ValidationRules.phone.message });
         isValid = false;
     }
     
-    // Validate name length if provided
+    // Validate required name field
     const nameField = document.getElementById('name');
-    if (nameField.value.length > ValidationRules.name.maxLength) {
+    if (!nameField.value.trim()) {
+        errors.push({ field: 'name', message: 'Full name is required' });
+        isValid = false;
+    } else if (nameField.value.length > ValidationRules.name.maxLength) {
         errors.push({ field: 'name', message: ValidationRules.name.message });
         isValid = false;
     }
