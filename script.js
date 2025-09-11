@@ -724,6 +724,9 @@ function handleSubmit(e) {
     // Sanitize all form data before submission
     const sanitizedData = validateAndSanitizeFormData(formData);
     
+    // IMPORTANT: Add form-name for Netlify Forms to recognize the submission
+    sanitizedData['form-name'] = 'cj-reform-survey';
+    
     // Add authentication token and timestamp
     sanitizedData.sessionToken = sessionToken;
     sanitizedData.submissionTime = new Date().toISOString();
@@ -829,11 +832,12 @@ async function authenticateUser(password) {
             }
         } else {
             // The response was not JSON (e.g., a 404 HTML page).
-            return { success: false, message: `Authentication service is unavailable (Error: ${response.status}).` };
+            return { success: false, message: `Authentication service is unavailable. Please ensure the site is properly deployed on Netlify with functions enabled.` };
         }
     } catch (error) {
-        console.error('Network or server error during authentication:', error);
-        return { success: false, message: 'Could not connect to the authentication service. Please check your network connection.' };
+        // Network error
+        console.error('Network error during authentication:', error);
+        return { success: false, message: 'Could not connect to the authentication service. Please check your network connection and try again.' };
     }
 }
 
